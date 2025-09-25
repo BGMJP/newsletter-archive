@@ -12,8 +12,10 @@ from tkinter import ttk, filedialog, messagebox, simpledialog
 import json
 import os
 import subprocess
+import re
 from pathlib import Path
 from datetime import datetime
+from bs4 import BeautifulSoup
 
 class NewsletterManager:
     def __init__(self, root):
@@ -145,10 +147,16 @@ class NewsletterManager:
             if not file_name:
                 return
         
-        # 제목 입력
-        title = simpledialog.askstring("제목 입력", 
-                                      f"'{file_name}' 파일의 제목을 입력하세요:",
-                                      initialvalue=file_name.replace('.html', ''))
+        # 자동 제목 추출
+        if file_path:
+            auto_title = self.extract_newsletter_info(file_path)
+        else:
+            auto_title = self.extract_newsletter_info(os.path.join(self.public_folder, file_name))
+        
+        # 제목 입력 (자동 추출된 제목을 기본값으로 사용)
+        title = simpledialog.askstring("제목 확인/수정", 
+                                      f"자동 추출된 제목입니다. 수정하시겠습니까?\n\n파일: {file_name}",
+                                      initialvalue=auto_title)
         if not title:
             return
             
@@ -332,6 +340,80 @@ class NewsletterManager:
         dialog.wait_window()
         return result[0]
         
+    def extract_newsletter_info(self, html_file_path):
+        """HTML 파일에서 날짜와 주제 제목들을 자동 추출"""
+        try:
+            with open(html_file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            soup = BeautifulSoup(content, 'html.parser')
+            
+            # 날짜 추출 (여러 패턴 시도)
+            date_str = ""
+            
+            # 패턴 1: title 태그에서 날짜 추출
+            title_tag = soup.find('title')
+            if title_tag:
+                title_text = title_tag.get_text()
+                date_match = re.search(r'(\d{4}-\d{2}-\d{2})', title_text)
+                if date_match:
+                    date_str = date_match.group(1)
+            
+            # 패턴 2: 본문에서 날짜 패턴 찾기
+            if not date_str:
+                text_content = soup.get_text()
+                date_match = re.search(r'(\d{4}-\d{2}-\d{2})', text_content)
+                if date_match:
+                    date_str = date_match.group(1)
+            
+            # 주제 제목들 추출
+            topics = []
+            
+            # 패턴 1: 특정 스타일이나 클래스를 가진 제목들 찾기
+            # 큰 폰트 크기를 가진 텍스트들을 주제로 간주
+            for element in soup.find_all(['div', 'td', 'h1', 'h2', 'h3', 'p']):
+                style = element.get('style', '')
+                text = element.get_text(strip=True)
+                
+                # 폰트 크기가 큰 텍스트를 주제로 간주
+                if ('font-size: 2' in style or 'font-size: 3' in style or 
+                    'font-weight: 700' in style or 'font-weight: bold' in style):
+                    if (len(text) > 5 and len(text) < 100 and 
+                        '뉴스레터' not in text and '아마존캐리' not in text and
+                        date_str not in text and 'http' not in text):
+                        topics.append(text)
+            
+            # 중복 제거 및 정리
+            topics = list(dict.fromkeys(topics))  # 순서 유지하며 중복 제거
+            topics = [topic for topic in topics if topic.strip()]  # 빈 문자열 제거
+            
+            # 최대 2개 주제만 사용
+            topics = topics[:2]
+            
+            # 제목 생성
+            if date_str and topics:
+                if len(topics) >= 2:
+                    title = f"{date_str} | {topics[0]} | {topics[1]}"
+                else:
+                    title = f"{date_str} | {topics[0]}"
+            elif date_str:
+                title = f"{date_str} | 뉴스레터"
+            else:
+                # 파일명에서 날짜 추출 시도
+                filename = os.path.basename(html_file_path)
+                date_match = re.search(r'(\d{4}-\d{2}-\d{2})', filename)
+                if date_match:
+                    title = f"{date_match.group(1)} | 뉴스레터"
+                else:
+                    title = filename.replace('.html', '')
+            
+            return title
+            
+        except Exception as e:
+            # 오류 시 파일명 사용
+            filename = os.path.basename(html_file_path)
+            return filename.replace('.html', '')
+    
     def update_status(self, message, color="black"):
         """상태 메시지 업데이트"""
         self.status_label.config(text=message, foreground=color)

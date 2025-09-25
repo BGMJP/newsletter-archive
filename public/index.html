@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>뉴스레터 아카이브</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      min-height: 100vh;
+      background-color: #F8F9FA;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      margin: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .logo-section {
+      width: 100%;
+      padding: 24px 0 0 0;
+      background: #F8F9FA;
+      text-align: center;
+    }
+    .logo-section img {
+      height: 80px;
+      width: auto;
+      object-fit: contain;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .logo-section img:hover {
+      transform: scale(1.05);
+    }
+    .main-title {
+      font-size: 48px;
+      font-weight: 700;
+      color: #343A40;
+      line-height: 1.2;
+      text-align: center;
+      margin: 32px 0 24px 0;
+    }
+    .subtitle {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1E3A5F;
+      line-height: 1.4;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .desc {
+      font-size: 18px;
+      font-weight: 400;
+      color: #343A40;
+      line-height: 1.6;
+      text-align: center;
+      margin: 0 auto 48px auto;
+      max-width: 600px;
+    }
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+    @media (min-width: 640px) {
+      .button-group {
+        flex-direction: row;
+      }
+    }
+    .btn {
+      font-size: 16px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 8px;
+      min-width: 200px;
+      text-align: center;
+      border: none;
+      cursor: pointer;
+      transition: filter 0.2s, background 0.2s;
+      outline: none;
+      margin: 0;
+    }
+    .btn-yellow {
+      background: #FFC107;
+      color: #1E3A5F;
+    }
+    .btn-yellow:hover {
+      filter: brightness(0.95);
+    }
+    .btn-navy {
+      background: #1E3A5F;
+      color: #fff;
+    }
+    .btn-navy:hover {
+      filter: brightness(1.1);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #1E3A5F;
+      color: #1E3A5F;
+    }
+    .btn-outline:hover {
+      background: rgba(30, 58, 95, 0.1);
+    }
+    .board-section {
+      max-width: 900px;
+      margin: 0 auto 48px auto;
+      padding: 0 24px 48px 24px;
+    }
+    .newsletter-empty {
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 1px solid #E9ECEF;
+      text-align: center;
+      margin-top: 24px;
+    }
+    .newsletter-empty-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: #6C757D;
+      margin-bottom: 8px;
+    }
+    .newsletter-empty-desc {
+      font-size: 14px;
+      color: #ADB5BD;
+      line-height: 1.5;
+    }
+    .newsletter-item {
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 1px solid #E9ECEF;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .newsletter-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    .newsletter-link {
+      display: block;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .newsletter-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1E3A5F;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-section">
+    <img src="https://adcarry.notion.site/image/attachment%3Aac07201a-024a-463f-bd20-2f20d4d4b4de%3Aimage.png?table=block&id=25ae94ad-9bfc-80a7-8eaf-dcdcc0483c50&spaceId=7dcb314c-1724-4db8-82f4-a1e4b8855441&width=2000&userId=&cache=v2" alt="아마존캐리 로고" onclick="window.open('https://amzcarry.figma.site/', '_blank')">
+  </div>
+  <div class="container">
+    <h1 class="main-title">뉴스레터 아카이브</h1>
+    <h2 class="subtitle">아마존캐리의 소식을 모두 만나보세요!</h2>
+    <div class="desc">
+      매주 발행되는 아마존캐리의 뉴스레터를 통해,<br>
+      아마존 최신 트렌드와 실용적인 노하우를 제공해드립니다.<br><br>
+      구독을 신청하고 최신 소식을 가장 먼저 받아보세요!
+    </div>
+    <div class="button-group">
+      <button class="btn btn-yellow" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSckuEedYOZvd71GOV1zAiWqxeZyVX2FXHSW30dxmrrON4td-Q/viewform', '_blank')">아마존캐리 뉴스레터 구독하기</button>
+      <button class="btn btn-navy" onclick="window.open('https://amzcarry.figma.site/#contact', '_blank')">아마존캐리 웹사이트</button>
+      <button class="btn btn-outline" onmouseover="this.style.background='rgba(30,58,95,0.1)'" onmouseout="this.style.background='transparent'" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSdeLewllbICJgW-77OIcaZ7r7uIsGyKopRFEXl1whHQZq7umg/viewform?usp=header', '_blank')">무료 시장 조사 바로가기</button>
+    </div>
+  </div>
+  <div class="board-section container">
+    <div id="newsletter-list">
+      <!-- 뉴스레터 목록이 동적으로 로드됩니다 -->
+    </div>
+  </div>
+
+  <script>
+    // newsletters.json 파일을 읽어와서 뉴스레터 목록을 동적으로 생성
+    async function loadNewsletters() {
+      try {
+        const response = await fetch('newsletters.json');
+        const newsletters = await response.json();
+        const listContainer = document.getElementById('newsletter-list');
+        
+        if (newsletters.length === 0) {
+          // 뉴스레터가 없을 때 기본 메시지 표시
+          listContainer.innerHTML = `
+            <div class="newsletter-empty">
+              <div class="newsletter-empty-title">📧 뉴스레터 준비 중</div>
+              <div class="newsletter-empty-desc">
+                곧 다양한 아마존 관련 뉴스레터를<br>
+                만나보실 수 있습니다.
+              </div>
+            </div>
+          `;
+        } else {
+          // 뉴스레터 목록 생성
+          let html = '';
+          newsletters.forEach(newsletter => {
+            html += `
+              <div class="newsletter-item">
+                <a href="${newsletter.file}" target="_blank" class="newsletter-link">
+                  <div class="newsletter-title">${newsletter.title}</div>
+                </a>
+              </div>
+            `;
+          });
+          listContainer.innerHTML = html;
+        }
+      } catch (error) {
+        console.error('뉴스레터 목록을 불러오는데 실패했습니다:', error);
+        // 오류 시 기본 메시지 표시
+        document.getElementById('newsletter-list').innerHTML = `
+          <div class="newsletter-empty">
+            <div class="newsletter-empty-title">📧 뉴스레터 준비 중</div>
+            <div class="newsletter-empty-desc">
+              곧 다양한 아마존 관련 뉴스레터를<br>
+              만나보실 수 있습니다.
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // 페이지 로드 시 뉴스레터 목록 로드
+    document.addEventListener('DOMContentLoaded', loadNewsletters);
+  </script>
+</body>
+</html>

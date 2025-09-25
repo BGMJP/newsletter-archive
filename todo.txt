@@ -1,0 +1,98 @@
+## 🚀 뉴스레터 아카이브 사이트 구축 및 자동화 A-Z
+이 문서는 파이썬(Python)으로 만든 관리 도구를 사용해 정적 뉴스레터 아카이브 웹사이트를 만들고, Netlify와 GitHub를 통해 배포를 자동화하며, 개인 도메인을 연결하는 전체 과정을 안내합니다.
+
+### 1. 프로젝트 구조
+먼저, 아래와 같이 폴더와 파일을 구성합니다.
+
+newsletter-project/
+├── 📄 app.py              # 🐍 관리자용 파이썬 GUI 프로그램
+└── public/                 # 🌐 외부에 공개될 웹사이트 폴더
+    ├── 📄 index.html        #   - 방문자가 보는 첫 페이지
+    ├── 📄 newsletters.json  #   - 뉴스레터 목록 데이터
+    ├── 📄 newsletter_01.html #   - 개별 뉴스레터 파일 1
+    └── 📄 newsletter_02.html #   - 개별 뉴스레터 파일 2
+### 2. 웹사이트 (public 폴더) 만들기
+방문자에게 보여줄 웹사이트의 뼈대를 만듭니다.
+
+index.html 작성:
+
+뉴스레터 목록이 표시될 빈 영역(예: <div id="newsletter-list"></div>)을 만듭니다.
+
+newsletters.json 파일을 읽어와서 위 div 영역에 목록을 동적으로 채워주는 JavaScript 코드를 추가합니다.
+
+각 목록은 <a> 태그로 만들고, 클릭 시 새 탭에서 열리도록 target="_blank" 속성을 추가합니다.
+
+newsletters.json 작성:
+
+아래 형식에 맞춰 뉴스레터 목록을 관리하는 JSON 파일을 만듭니다.
+
+JSON
+
+[
+  {
+    "title": "10월 뉴스레터: 가을 소식",
+    "file": "newsletter_02.html"
+  },
+  {
+    "title": "9월 뉴스레터: 시작",
+    "file": "newsletter_01.html"
+  }
+]
+### 3. 관리 도구 (app.py) 만들기
+newsletters.json 파일을 쉽게 수정할 수 있는 데스크톱용 GUI 프로그램을 만듭니다.
+
+사용 기술: Python과 내장 라이브러리인 Tkinter.
+
+주요 기능:
+
+목록 표시: 프로그램 실행 시 public/newsletters.json 파일을 읽어와 목록을 보여줍니다.
+
+새로 추가: '추가' 버튼으로 public 폴더 안의 HTML 파일을 선택하고, 제목을 입력하면 목록에 추가됩니다.
+
+삭제: 목록에서 항목을 선택하고 '삭제' 버튼을 누르면 제거됩니다.
+
+저장: '저장' 버튼을 누르면 현재 프로그램의 목록 상태가 public/newsletters.json 파일에 그대로 덮어씌워집니다.
+
+### 4. 배포 자동화 (GitHub & Netlify)
+로컬 컴퓨터에서 작업한 public 폴더의 내용을 서버에 올리고, 이 과정을 자동화합니다.
+
+Git & GitHub 설정:
+
+newsletter-project 폴더 전체를 GitHub 저장소(Repository)에 올립니다(Push).
+
+Netlify 설정:
+
+Netlify에 GitHub 계정으로 로그인합니다.
+
+새 프로젝트를 만들어 위에서 생성한 GitHub 저장소를 연결합니다.
+
+배포 설정은 아래와 같이 딱 한 번만 지정해주면 됩니다.
+
+Publish directory (배포 폴더): public
+
+Build command (빌드 명령어): (공백으로 둠)
+
+자동화 워크플로우:
+
+① 내 PC에서 app.py 관리 도구로 뉴스레터를 추가/저장합니다.
+
+② 변경된 프로젝트 파일을 GitHub에 Push 합니다.
+
+③ Netlify가 변경을 감지하고 자동으로 public 폴더의 내용만 가져가 웹사이트를 업데이트합니다.
+
+### 5. 개인 도메인 연결
+~~.netlify.app 주소 대신 구매한 개인 도메인(예: mynewsletter.com)을 연결합니다.
+
+도메인 구매: 가비아, 카페24, GoDaddy 등에서 원하는 도메인을 구매합니다.
+
+Netlify에 도메인 추가:
+
+Netlify 프로젝트의 'Domain settings' 메뉴로 갑니다.
+
+**'Add custom domain'**을 눌러 구매한 도메인을 입력합니다.
+
+네임서버(Nameservers) 변경:
+
+Netlify가 알려주는 네임서버 주소(4개)를 복사합니다.
+
+도메인을 구매한 곳(가비아 등)의 DNS 설정 메뉴로 가서, 기존 네임서버를 지우고 Netlify가 알려준 주소로 변경합니다.

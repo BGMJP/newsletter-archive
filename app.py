@@ -11,7 +11,9 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, simpledialog
 import json
 import os
+import subprocess
 from pathlib import Path
+from datetime import datetime
 
 class NewsletterManager:
     def __init__(self, root):
@@ -65,10 +67,14 @@ class NewsletterManager:
         ttk.Button(button_frame, text="아래로 이동", 
                   command=self.move_down).grid(row=0, column=3, padx=(0, 10))
         
-        # 저장 버튼 (강조)
-        save_button = ttk.Button(main_frame, text="변경사항 저장", 
-                                command=self.save_newsletters)
-        save_button.grid(row=3, column=0, columnspan=3, pady=(0, 10))
+        # 저장 및 배포 버튼들
+        save_frame = ttk.Frame(main_frame)
+        save_frame.grid(row=3, column=0, columnspan=3, pady=(0, 10))
+        
+        ttk.Button(save_frame, text="변경사항 저장", 
+                  command=self.save_newsletters).grid(row=0, column=0, padx=(0, 10))
+        ttk.Button(save_frame, text="저장 + GitHub 배포", 
+                  command=self.save_and_deploy).grid(row=0, column=1)
         
         # 상태 표시
         self.status_label = ttk.Label(main_frame, text="준비됨", 
@@ -222,10 +228,64 @@ class NewsletterManager:
             
             self.update_status("변경사항이 저장되었습니다!", "green")
             messagebox.showinfo("성공", "뉴스레터 목록이 성공적으로 저장되었습니다!")
+            return True
             
         except Exception as e:
             messagebox.showerror("오류", f"저장에 실패했습니다: {str(e)}")
             self.update_status("저장 실패!", "red")
+            return False
+            
+    def save_and_deploy(self):
+        """저장 후 GitHub에 자동 배포"""
+        # 먼저 저장
+        if not self.save_newsletters():
+            return
+            
+        # GitHub 배포 확인
+        if not messagebox.askyesno("GitHub 배포", 
+                                  "변경사항을 GitHub에 업로드하고 자동 배포하시겠습니까?\n\n"
+                                  "이 작업은 몇 초가 소요될 수 있습니다."):
+            return
+            
+        try:
+            self.update_status("GitHub에 배포 중...", "orange")
+            
+            # Git 명령어들 실행
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            commit_message = f"Update newsletters: {timestamp}"
+            
+            # Git add
+            result = subprocess.run(['git', 'add', '.'], 
+                                  capture_output=True, text=True, cwd='.')
+            if result.returncode != 0:
+                raise Exception(f"Git add 실패: {result.stderr}")
+            
+            # Git commit
+            result = subprocess.run(['git', 'commit', '-m', commit_message], 
+                                  capture_output=True, text=True, cwd='.')
+            if result.returncode != 0 and "nothing to commit" not in result.stdout:
+                raise Exception(f"Git commit 실패: {result.stderr}")
+            
+            # Git push
+            result = subprocess.run(['git', 'push'], 
+                                  capture_output=True, text=True, cwd='.')
+            if result.returncode != 0:
+                raise Exception(f"Git push 실패: {result.stderr}")
+            
+            self.update_status("GitHub 배포 완료! 🚀", "green")
+            messagebox.showinfo("배포 성공", 
+                              "변경사항이 GitHub에 성공적으로 업로드되었습니다!\n\n"
+                              "Netlify에서 자동으로 사이트가 업데이트됩니다.\n"
+                              "업데이트 완료까지 1-2분 정도 소요될 수 있습니다.")
+            
+        except Exception as e:
+            error_msg = str(e)
+            if "nothing to commit" in error_msg:
+                messagebox.showinfo("정보", "변경사항이 없어서 배포할 내용이 없습니다.")
+                self.update_status("변경사항 없음", "blue")
+            else:
+                messagebox.showerror("배포 오류", f"GitHub 배포에 실패했습니다:\n\n{error_msg}")
+                self.update_status("배포 실패!", "red")
             
     def select_from_list(self, title, message, options):
         """리스트에서 선택하는 다이얼로그"""

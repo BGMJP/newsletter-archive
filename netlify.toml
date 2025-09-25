@@ -1,0 +1,27 @@
+[build]
+  # 빌드 명령어 (정적 사이트이므로 빈 값)
+  command = ""
+  
+  # 배포할 폴더
+  publish = "public"
+
+[build.environment]
+  # Node.js 버전 (필요시)
+  NODE_VERSION = "18"
+
+# 리다이렉트 설정 (필요시)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404
+
+# 헤더 설정
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"

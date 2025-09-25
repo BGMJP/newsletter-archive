@@ -129,6 +129,8 @@ class NewsletterManager:
             messagebox.showerror("오류", f"public 폴더를 읽는데 실패했습니다: {str(e)}")
             return
             
+        file_path = None  # 변수 초기화
+        
         if not html_files:
             # HTML 파일이 없으면 직접 선택
             file_path = filedialog.askopenfilename(

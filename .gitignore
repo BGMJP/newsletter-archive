@@ -42,3 +42,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Python dependencies (not needed for static site deployment)
+requirements.txt

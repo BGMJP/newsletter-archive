@@ -216,13 +216,15 @@
             `;
           });
           listContainer.innerHTML = html;
+          
+          // 동적 폰트 크기 조절
+          adjustFontSizes();
         }
       } catch (error) {
         console.error('뉴스레터 목록을 불러오는데 실패했습니다:', error);
         // 오류 시 기본 메시지 표시
         document.getElementById('newsletter-list').innerHTML = `
           <div class="newsletter-empty">
-            <div class="newsletter-empty-title">📧 뉴스레터 준비 중</div>
             <div class="newsletter-empty-desc">
               곧 다양한 아마존 관련 뉴스레터를<br>
               만나보실 수 있습니다.
@@ -230,6 +232,25 @@
           </div>
         `;
       }
+    }
+
+    // 텍스트 길이에 따라 폰트 크기 동적 조절
+    function adjustFontSizes() {
+      const titles = document.querySelectorAll('.newsletter-title');
+      titles.forEach(title => {
+        const textLength = title.textContent.length;
+        
+        // 텍스트 길이에 따라 폰트 크기 조절
+        if (textLength > 60) {
+          title.style.fontSize = '14px';
+        } else if (textLength > 45) {
+          title.style.fontSize = '15px';
+        } else if (textLength > 35) {
+          title.style.fontSize = '16px';
+        } else {
+          title.style.fontSize = '18px';
+        }
+      });
     }
 
     // 페이지 로드 시 뉴스레터 목록 로드
